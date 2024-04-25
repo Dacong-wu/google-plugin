@@ -1,22 +1,15 @@
-const socketIo = require('socket.io')
-const emitFunctions = require('./emitFunctions')
-const { middleware } = require('./middleware')
+const WebSocket = require('ws')
 
 const socket = server => {
-  const io = socketIo(server, {
-    maxHttpBufferSize: 1e7 //最大接收10M
-  })
-
-  io.on('connection', async socket => {
-    console.log(socket.id)
-    Object.keys(emitFunctions).forEach(key => {
-      socket.on(key, async (data, callback) => {
-        middleware({ socket, data, callback, func: emitFunctions[key] })
-      })
+  const wss = new WebSocket.Server({ server })
+  wss.on('connection', function connection(ws, req) {
+    console.log('新的WebSocket连接已建立')
+    ws.on('message', function message(data) {
+      console.log('received: %s', data)
     })
+    // 发送消息给客户端
+    ws.send('欢迎连接WebSocket服务器')
   })
-
-  return io
 }
 
 module.exports = socket
