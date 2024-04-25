@@ -1,45 +1,36 @@
+import { sendMessage, updateBadgeText, getMessage } from './utils/socket.js'
 const TEN_SECONDS_MS = 10 * 1000
 let webSocket = null
-
+let keepAliveIntervalId = null
 connect()
-keepAlive()
 
 function connect() {
-  webSocket = new WebSocket('ws://127.0.0.1:5000')
+  if (keepAliveIntervalId) clearInterval(keepAliveIntervalId)
+  webSocket = new WebSocket('ws://127.0.0.1:5010')
 
+  keepAlive()
+  
   webSocket.onopen = () => {
     chrome.action.setIcon({ path: 'assets/128-success.png' })
-    chrome.action.setBadgeText({ text: '123' });
   }
 
   webSocket.onmessage = event => {
-    console.log(event.data)
+    getMessage(event.data)
   }
 
   webSocket.onclose = () => {
     chrome.action.setIcon({ path: 'assets/128-close.png' })
     webSocket = null
-  }
-}
-
-function disconnect() {
-  if (webSocket) {
-    webSocket.close()
+    setTimeout(connect, 2000)
   }
 }
 
 function keepAlive() {
-  const keepAliveIntervalId = setInterval(
-    () => {
-      if (webSocket) {
-        console.log('ping')
-        webSocket.send('ping')
-      } else {
-        clearInterval(keepAliveIntervalId)
-      }
-    },
-    // It's important to pick an interval that's shorter than 30s, to
-    // avoid that the service worker becomes inactive.
-    TEN_SECONDS_MS
-  )
+  keepAliveIntervalId = setInterval(() => {
+    if (webSocket) {
+      sendMessage(webSocket, 'ping', '1')
+    } else {
+      clearInterval(keepAliveIntervalId)
+    }
+  }, TEN_SECONDS_MS)
 }
