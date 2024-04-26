@@ -1,0 +1,46 @@
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: rgb(33, 33, 33);
+    color: white;
+  }
+}
+
+.app {
+  display: flex;
+  column-gap: 10px;
+  width: 360px;
+  font-size: 14px;
+  padding: 3px 16px;
+}
+
+.info-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+}
+
+#countValue {
+  font-weight: bold;
+  color: red;
+  padding: 0 4px;
+}
+
+.warning {
+  margin: 0 5px;
+  font-weight: bold;
+  color: rgb(234, 108, 11);
+}
+
+button {
+  color: rgb(169, 0, 0);
+  font-weight: bold;
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+h3,
+p {
+  margin: 0;
+}
