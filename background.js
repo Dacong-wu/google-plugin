@@ -4,6 +4,10 @@ let webSocket = null
 let keepAliveIntervalId = null
 connect()
 
+chrome.runtime.onStartup.addListener(() => {
+  if (!webSocket) connect()
+})
+
 function connect() {
   if (keepAliveIntervalId) clearInterval(keepAliveIntervalId)
   webSocket = new WebSocket('wss://api.ll1025.cn')
