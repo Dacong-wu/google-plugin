@@ -8,9 +8,18 @@ chrome.runtime.onStartup.addListener(() => {
   if (!webSocket) connect()
 })
 
+chrome.runtime.onInstalled.addListener(() => {
+  
+  chrome.storage.local.get('token', function (data) {
+    const token = data.token
+    console.log('获取到的凭证:', token)
+  })
+})
+
 function connect() {
   if (keepAliveIntervalId) clearInterval(keepAliveIntervalId)
-  webSocket = new WebSocket('wss://api.ll1025.cn')
+  // webSocket = new WebSocket('wss://api.ll1025.cn')
+  webSocket = new WebSocket('ws://127.0.0.1:5003')
 
   keepAlive()
 
